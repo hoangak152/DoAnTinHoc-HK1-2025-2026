@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
@@ -67,36 +67,32 @@ namespace DoAnTinHoc
         // ==== HIỂN THỊ DỮ LIỆU LÊN DATAGRIDVIEW ====
         private void ShowDataOnGrid(List<string[]> data)
         {
-            DataTable table = new DataTable();
-
             if (data.Count == 0)
             {
                 MessageBox.Show("Không có dữ liệu để hiển thị!");
                 return;
             }
 
-            // Tạo cột không tên (để không hiện "Cột 1, Cột 2...")
-            for (int i = 0; i < data[0].Length; i++)
-            {
-                table.Columns.Add();
-            }
+            DataTable table = new DataTable();
 
-            // Thêm các hàng dữ liệu
-            foreach (var row in data)
-            {
-                table.Rows.Add(row);
-            }
+            // Dòng đầu tiên làm header
+            var header = data[0];
+            foreach (var colName in header)
+                table.Columns.Add(colName);  // đặt tên cột chính xác
+
+            // Thêm dữ liệu còn lại
+            for (int i = 1; i < data.Count; i++)
+                table.Rows.Add(data[i]);
 
             dataGridView1.DataSource = table;
 
-            // Ẩn dòng tiêu đề cột
-            dataGridView1.ColumnHeadersVisible = false;
-
-            // Tuỳ chọn hiển thị cho đẹp
+            dataGridView1.ColumnHeadersVisible = true;  // hiện header từ CSV
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.ReadOnly = true;
             dataGridView1.AllowUserToAddRows = false;
         }
+
+
 
         // ==== NÚT ĐỌC FILE ====
         private void button1_Click(object sender, EventArgs e)
@@ -161,10 +157,10 @@ namespace DoAnTinHoc
             var header = rows[0];
             var dataRows = rows.Skip(1).ToList();
 
-            int examScoreIndex = Array.IndexOf(header, "sleep_hours");
+            int examScoreIndex = Array.IndexOf(header, "exam_score");
             if (examScoreIndex == -1)
             {
-                MessageBox.Show("Không tìm thấy cột sleep_hours!");
+                MessageBox.Show("Không tìm thấy cột exam_score!");
                 return;
             }
 
@@ -180,7 +176,7 @@ namespace DoAnTinHoc
                 }
                 catch
                 {
-                    // bỏ qua dòng lỗi
+                    
                 }
             }
 
@@ -194,7 +190,7 @@ namespace DoAnTinHoc
                 table.Rows.Add(node.RowData);
 
             dataGridView1.DataSource = table;
-            dataGridView1.ColumnHeadersVisible = true; 
+            dataGridView1.ColumnHeadersVisible = true;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
